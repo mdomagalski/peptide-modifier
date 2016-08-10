@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>peptide-modifier test</title>
+
+    <!-- Imports custom element -->
+    <link rel="import" href="peptide-modifier.html">
+
+</head>
+<body onload="(function() {
+        if ('registerElement' in document
+            && 'import' in document.createElement('link')
+            && 'content' in document.createElement('template')) {
+            // platform is good!
+        } else {
+            // polyfill the platform!
+            var e = document.createElement('script');
+            e.src = '../webcomponentsjs/webcomponents-lite.min.js';
+            document.body.appendChild(e);
+        }
+    })();">
+
+    <!-- Runs custom element -->
+    <peptide-modifier peptides='["PKNKC", "KRENMC"]'></peptide-modifier>
+
+</body>
+</html>

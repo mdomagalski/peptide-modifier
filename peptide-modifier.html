@@ -1,0 +1,244 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<script src="../fishtones-js/dist/fishtones-js-bundle-min.js"></script>
+
+<dom-module id="peptide-modifier">
+    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+    <style>
+        :root {
+            --paper-card: {
+                display: inline;
+                box-shadow: none;
+            };
+
+            --paper-card-header:{
+                margin: 10px;
+            };
+            --paper-card-header-color: var(--paper-indigo-500);
+
+            --paper-card-header-text: {
+                font-size: 20px;
+                padding: 15px 0 0 5px;
+            };
+        }
+
+        .card-content {
+            margin: 10px;
+            border: 1px solid var(--paper-indigo-500);
+        }
+
+        .card-actions {
+            margin: 20px 0 0 0;
+            padding: 0;
+        }
+
+        paper-checkbox {
+            margin-top: 10px;
+        }
+
+        .modificationsBox{
+            margin: 0 0 20px 0;
+
+        }
+
+        .modificationCheckbox {
+            min-width: 225px;
+            padding: 0 20px 0 0;
+        }
+
+        .layout {
+            padding-left: 10px;
+        }
+
+    </style>
+    <template>
+        <paper-card heading="Fixed modifications">
+            <div class="card-content">
+                <template id="modificationsTemplate" is="dom-repeat" items="{{modifications}}">
+                    <paper-checkbox id="{{item}}" checked={{item}} on-change="handleModification"> Acetylation (K)</paper-checkbox>
+                    <iron-localstorage name="{{item}}" value="{{item}}"></iron-localstorage>
+                </template>
+                <div id="modificationsBox" class="modificationsBox layout horizontal wrap">
+                    <div class="modificationCheckbox layout vertical">
+                        <paper-checkbox id="K_Acetyl" checked={{K_Acetyl}} on-change="handleModification"> Acetylation (K)</paper-checkbox>
+                        <iron-localstorage name="K_Acetyl" value="{{K_Acetyl}}"></iron-localstorage>
+                        <paper-checkbox id="Nterm_Acetyl" checked={{Nterm_Acetyl}} on-change="handleModification"> Acetylation (N-term)</paper-checkbox>
+                        <iron-localstorage name="Nterm_Acetyl" value="{{Nterm_Acetyl}}"></iron-localstorage>
+                    </div>
+                    <div class="modificationCheckbox layout vertical">
+                        <paper-checkbox id="Cterm_Amidated" checked={{Cterm_Amidated}} on-change="handleModification"> Amidated (C-term)</paper-checkbox>
+                        <iron-localstorage name="Cterm_Amidated" value="{{Cterm_Amidated}}"></iron-localstorage>
+                        <paper-checkbox id="C_Carbamidomethyl" checked={{C_Carbamidomethyl}} on-change="handleModification"> Carbamidomethylation (C)</paper-checkbox>
+                        <iron-localstorage name="C_Carbamidomethyl" value="{{C_Carbamidomethyl}}"></iron-localstorage>
+                    </div>
+                    <div class="modificationCheckbox layout vertical">
+                        <paper-checkbox id="K_Carbamyl" checked={{K_Carbamyl}} on-change="handleModification"> Carbamyl (K)</paper-checkbox>
+                        <iron-localstorage name="K_Carbamyl" value="{{K_Carbamyl}}"></iron-localstorage>
+                        <paper-checkbox id="NQ_Deamidated" checked={{NQ_Deamidated}} on-change="handleModification"> Deaminated (NQ)</paper-checkbox>
+                        <iron-localstorage name="NQ_Deamidated" value="{{NQ_Deamidated}}"></iron-localstorage>
+                    </div>
+                    <div class="modificationCheckbox layout vertical">
+                        <paper-checkbox id="K_TMT2plex" checked={{K_TMT2plex}} on-change="handleModification"> TMT2plex(K)</paper-checkbox>
+                        <iron-localstorage name="K_TMT2plex" value="{{K_TMT2plex}}"></iron-localstorage>
+                        <paper-checkbox id="Nterm_TMT2plex" checked={{Nterm_TMT2plex}} on-change="handleModification"> TMT2plex (N-term)</paper-checkbox>
+                        <iron-localstorage name="Nterm_TMT2plex" value="{{Nterm_TMT2plex}}"></iron-localstorage>
+                    </div>
+                    <div class="modificationCheckbox layout vertical">
+                        <paper-checkbox id="K_TMT6plex" checked={{K_TMT6plex}} on-change="handleModification"> TMT6plex (K)</paper-checkbox>
+                        <iron-localstorage name="K_TMT6plex" value="{{K_TMT6plex}}"></iron-localstorage>
+                        <paper-checkbox id="Nterm_TMT6plex" checked={{Nterm_TMT6plex}} on-change="handleModification"> TMT6plex (N-term)</paper-checkbox>
+                        <iron-localstorage name="Nterm_TMT6plex" value="{{Nterm_TMT6plex}}"></iron-localstorage>
+                    </div>
+                    <div class="modificationCheckbox layout vertical">
+                        <paper-checkbox id="M_Oxidation" checked={{M_Oxidation}} on-change="handleModification"> Oxidation (M)</paper-checkbox>
+                        <iron-localstorage name="M_Oxidation" value="{{M_Oxidation}}"></iron-localstorage>
+                    </div>
+                </div>
+            </div>
+        </paper-card>
+    </template>
+    <script>
+        Polymer({
+            is: 'peptide-modifier',
+            properties: {
+                peptides: {
+                    type: Array,
+                    notify: true
+                },
+                fixedModifications: {
+                    type: Array,
+                    value: []
+                },
+                K_Acetyl: {
+                    type: Boolean,
+                    value: false
+                },
+                Nterm_Acetyl: {
+                    type: Boolean,
+                    value: false
+                },
+                Cterm_Amidated: {
+                    type: Boolean,
+                    value: false
+                },
+                C_Carbamidomethylation: {
+                    type: Boolean,
+                    value: false
+                },
+                K_Carbamyl: {
+                    type: Boolean,
+                    value: false
+                },
+                NQ_Deamidated: {
+                    type: Boolean,
+                    value: false
+                },
+                M_Oxidation: {
+                    type: Boolean,
+                    value: false
+                },
+                K_TMT2plex: {
+                    type: Boolean,
+                    value: false
+                },
+                Nterm_TMT2plex: {
+                    type: Boolean,
+                    value: false
+                },
+                K_TMT6plex: {
+                    type: Boolean,
+                    value: false
+                },
+                Nterm_TMT6plex: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+            attached: function(){
+                this.richSeqShortcuter = new fishtones.dry.RichSequenceShortcuter();
+                this.richSeqShortcuter.defaults.modif2short['TMT6plex'] = 'Tm6';
+                this.richSeqShortcuter.defaults.modif2short['TMT2plex'] = 'Tm2';
+                this.richSeqShortcuter.defaults.modif2short['Acetyl'] = 'Ac';
+                this.richSeqShortcuter.defaults.modif2short['Amidated'] = 'Am';
+                this.richSeqShortcuter.defaults.modif2short['Carbamyl'] = 'Ca';
+                this.richSeqShortcuter.defaults.modif2short['Carbamidomethyl'] = 'Cb';
+                this.richSeqShortcuter.defaults.modif2short['Deamidated'] = 'De';
+                this.richSeqShortcuter.defaults.modif2short['Oxidation'] = 'Ox';
+                for (var idx in this.peptides) {
+                    if (typeof this.peptides[idx]=='string'){
+                        this.peptides[idx] = this.richSeqShortcuter.richSeqFromString(this.peptides[idx]);
+                    }
+                }
+                this._initializeModifications();
+            },
+            _initializeModifications: function () {
+                var modificationsBox = this.$.modificationsBox;
+                var checkBoxes = Array.prototype.slice.call(modificationsBox.getElementsByTagName('paper-checkbox'));
+                var self = this;
+                checkBoxes.forEach(function (item) {
+                    if (item.checked){
+                        var modification = item.id.split('_');
+                        var modResidue = modification[0];
+                        var modType = modification[1];
+                        if (modResidue in self.fixedModifications){
+                            self.fixedModifications[modResidue].push(modType);
+                        }else{
+                            self.fixedModifications[modResidue] = [modType];
+                        }}
+                });
+            },
+            handleModification: function(e) {
+                var modification = e.target.id.split('_');
+                var modResidue = modification[0];
+                var modType = modification[1];
+                if (e.target.checked){
+                    if (modResidue in this.fixedModifications){
+                        this.fixedModifications[modResidue].push(modType);
+                    }else{
+                        this.fixedModifications[modResidue] = [modType];
+                    }
+                }else{
+                    if(this.fixedModifications[modResidue]){
+                        var modIdx = this.fixedModifications[modResidue].indexOf(modType);
+                        if(modIdx>=0){
+                            this.fixedModifications[modResidue].splice(modIdx,1);
+                        }
+                    }
+                }
+            },
+            applyModifications: function() {
+                var modifications = fishtones.dry.ResidueModificationDictionary;
+                for (var site in this.fixedModifications){
+                    for (var idx in this.peptides){
+                        var positions = [];
+                        if (site=='Nterm'){
+                            positions.push(0);
+                        }else if(site=='Cterm'){
+                            positions.push(this.peptides[idx].size()-1);
+                        }else{
+                            for (var s in site){
+                                var residue = site[s];
+                                for(var i=0; i<this.peptides[idx].toAAString().length;i++){
+                                    if(this.peptides[idx].toAAString()[i] === residue) positions.push(i);
+                                }
+                            }
+                        }
+                        for(var i in positions){
+                            var position = positions[i];
+                            for(var j in this.fixedModifications[site]){
+                                var newMod = modifications.get(this.fixedModifications[site][j]);
+                                var siteMod = this.peptides[idx].modifAt(position);
+                                if(!siteMod || (siteMod && siteMod.filter(function(a){ return a.id == newMod.id })==0)){
+                                    this.peptides[idx].addModification(position, newMod);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</dom-module>

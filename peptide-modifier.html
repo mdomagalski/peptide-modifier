@@ -167,11 +167,6 @@
                 this.richSeqShortcuter.defaults.modif2short['Carbamidomethyl'] = 'Cb';
                 this.richSeqShortcuter.defaults.modif2short['Deamidated'] = 'De';
                 this.richSeqShortcuter.defaults.modif2short['Oxidation'] = 'Ox';
-                for (var idx in this.peptides) {
-                    if (typeof this.peptides[idx]=='string'){
-                        this.peptides[idx] = this.richSeqShortcuter.richSeqFromString(this.peptides[idx]);
-                    }
-                }
                 this._initializeModifications();
             },
             _initializeModifications: function () {
@@ -211,6 +206,11 @@
             },
             applyModifications: function() {
                 var modifications = fishtones.dry.ResidueModificationDictionary;
+                for (var idx in this.peptides) {
+                    if (typeof this.peptides[idx]=='string'){
+                        this.peptides[idx] = this.richSeqShortcuter.richSeqFromString(this.peptides[idx]);
+                    }
+                }
                 for (var site in this.fixedModifications){
                     for (var idx in this.peptides){
                         var positions = [];
